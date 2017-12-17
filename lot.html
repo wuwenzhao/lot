@@ -124,6 +124,8 @@
     var s;
     var flag = 0;
     var winList = [];
+    var globalNum = 0;
+    var globalIntervalTime = 50;
 </script>
 <!--<script type="text/javascript" src="js/jquery-1.7.2-min.js"></script>-->
 <!--<script type="text/javascript" src="js/easing.js"></script>-->
@@ -211,14 +213,6 @@
         }
     }
 
-    function getNum() {
-        var num = Math.ceil(Math.random() * maxNum);
-        if (winList.indexOf(num) > -1) {
-            return getNum();
-        }
-        return num;
-    }
-
     $("#level_select").bind("change", function () {
         $("#level").html($("#level_select option:selected").text());
         $("#box").html("00");
@@ -229,24 +223,36 @@
             return;
         }
 
-
-
         s = setInterval(function () {
-//            var num = Math.ceil(Math.random() * maxNum);
-            var num = getNum();
-            if (num < 10) {
-                num = "0" + num;
-            }
-
-            $("#box").html(num);
-        }, 50);
+            globalNum = Math.ceil(Math.random() * maxNum);
+            $("#box").html(genShowNum(globalNum));
+        }, globalIntervalTime);
     });
 
     $("#stop_btn").bind("click", function () {
         clearInterval(s);
-        winList.push(num);
+        getValidNum();
         s = 0;
     });
+
+    function genShowNum(num) {
+        if (num < 10) {
+            num = "0" + num;
+        }
+        return num;
+    }
+
+    function getValidNum() {
+        globalNum = Math.ceil(Math.random() * maxNum);
+        if (winList.indexOf(globalNum) != -1) {
+            getValidNum();
+        }
+        winList.push(globalNum);
+        $("#box").html(genShowNum(globalNum));
+        if (winList.length == maxNum) {
+            winList = [];
+        }
+    }
 
     $('#start').click(function () {
         $('#jiang').html('等待抽奖中');

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Index</title>
+    <script type="text/javascript" src="src/js/jquery-1.11.3.js"></script>
+    <!--<script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>-->
+    <style type="text/css">
+        #level {
+            margin: 0 auto;
+            margin-top: 180px;
+            width: 1024px;
+            height: 150px;
+            font-size: 150px;
+            color: black;
+            font-weight: 300;
+            text-align: center;
+        }
+
+        #box {
+            margin: 0 auto;
+            margin-top: 10%;
+            /*background-color: rgba(200, 200, 0, 0.4);*/
+            width: 400px;
+            height: 250px;
+            /*position: absolute;*/
+            /*left: 20%;*/
+            /*right: 20%;*/
+            /*top: 20%;*/
+            /*background: red;*/
+            /*padding-top: 1%;*/
+            font-size: 300px;
+            text-align: center;
+            font-weight: bold;
+            /*line-height: 200px;*/
+            color: black;
+            border-radius: 10px;
+        }
+
+        #content {
+            background-image: url("src/img/backgroud.jpg");
+            width: 1024px;
+            height: 749px;
+            margin: 0 auto;
+            border: 1px solid #000000;
+            /*position: absolute;*/
+            /*width: auto;*/
+            /*min-width: 1024px;*/
+            /*left: 25%;*/
+            /*right: 25%;*/
+        }
+
+        #jiang {
+            width: 300px;
+            height: 50px;
+            background: red;
+            position: absolute;
+            left: 500px;
+            top: 320px;
+            border-radius: 10px;
+            text-align: center;
+            line-height: 50px;
+            color: #FFFFFF;
+            font-size: 20px;
+        }
+
+        #ji {
+            width: 300px;
+            height: 50px;
+            background: pink;
+            position: absolute;
+            left: 500px;
+            top: 400px;
+            border-radius: 10px;
+            text-align: center;
+            line-height: 50px;
+            color: #FFFFFF;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!--<button id="start">开始</button>-->
+<!--<button id="stop">停止</button>-->
+
+<div id="start_page" style="">
+    <label>最大数字:</label>
+    <input id="max_number" type="number">
+    <button id="confirm_start" type="button">确认</button>
+</div>
+
+<div id="content" style="display: none;">
+    <button id="start_btn">开始</button>
+    <button id="stop_btn">停止</button>
+
+    <select id="level_select">
+        <option value="1">一等奖</option>
+        <option value="2">二等奖</option>
+        <option value="3">三等奖</option>
+        <option value="4">参与奖</option>
+        <option value="5">优秀奖</option>
+    </select>
+
+    <img src="src/img/longwen_logo.gif" style="float: right;">
+    <div id="box">00</div>
+    <div id="level"></div>
+    <!--<div id="jiang"></div>-->
+    <!--<div id="ji"></div>-->
+</div>
+
+<!--<div class="demo">-->
+    <!--<iframe width="100%" frameborder="0" src="http://www.xwcms.net:80/webAnnexImages/fileAnnex/201506/14928/xwcms.html" id="" border="0" style="height: 352px;"></iframe>-->
+<!--</div>-->
+<script type="text/javascript">
+    //设置显示的所有抽奖名字
+    var list = ['小名', '小白', '小黑', '小红', '小绿', '小青', '小猪'];
+    //最终抽奖结果会从下面的这个数组里选出
+    var lis = ['小念', '小狗狗'];
+    var maxNum = 0;
+    var immer;
+    var se;
+
+    var s;
+    var flag = 0;
+    var winList = [];
+</script>
+<!--<script type="text/javascript" src="js/jquery-1.7.2-min.js"></script>-->
+<!--<script type="text/javascript" src="js/easing.js"></script>-->
+<script>
+    function numRand() {
+        var x = 9999; //上限
+        var y = 1111; //下限
+        var rand = parseInt(Math.random() * (x - y + 1) + y);
+        return rand;
+    }
+    var isBegin = false;
+    $(function(){
+        var u = 265;
+        $('.btn').click(function(){
+            if(isBegin) return false;
+            isBegin = true;
+            $(".num").css('backgroundPositionY',0);
+            var result = numRand();
+            $('#res').text('摇奖结果 = '+result);
+            var num_arr = (result+'').split('');
+            $(".num").each(function(index){
+                var _num = $(this);
+                setTimeout(function(){
+                    _num.animate({
+                        backgroundPositionY: (u*60) - (u*num_arr[index])
+                    },{
+                        duration: 6000+index*3000,
+                        easing: "easeInOutCirc",
+                        complete: function(){
+                            if(index==3) isBegin = false;
+                        }
+                    });
+                }, index * 300);
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $("#level_select").trigger("change");
+        $("#confirm_start").bind("click", function () {
+            maxNum = $("#max_number").val();
+            $("#start_page").hide();
+            $("#content").show();
+        });
+    });
+
+    $(document).keydown(function(e) {
+        if (!e) var e = window.event;
+        if (e.keyCode == 32) {
+            if (flag%2 == 0) {
+                if (s && s != 0) {
+                    return;
+                }
+
+                s = setInterval(function () {
+                    var num = Math.ceil(Math.random() * maxNum);
+
+                    if (num < 10) {
+                        num = "0" + num;
+                    }
+                    $("#box").html(num);
+                }, 50);
+            } else {
+                clearInterval(s);
+//                setInt();
+                s = 0;
+            }
+            flag++
+        }
+    });
+
+    function setInt() {
+        var maxTime = 2000;
+        var time = 50;
+        while (time < maxTime) {
+            setTimeout(function() {
+                var num = Math.ceil(Math.random() * maxNum);
+
+                if (num < 10) {
+                    num = "0" + num;
+                }
+                $("#box").html(num);
+            }, time);
+            time = time + 100;
+        }
+    }
+
+    function getNum() {
+        var num = Math.ceil(Math.random() * maxNum);
+        if (winList.indexOf(num) > -1) {
+            return getNum();
+        }
+        return num;
+    }
+
+    $("#level_select").bind("change", function () {
+        $("#level").html($("#level_select option:selected").text());
+        $("#box").html("00");
+    });
+
+    $("#start_btn").bind("click", function () {
+        if (s && s != 0) {
+            return;
+        }
+
+
+
+        s = setInterval(function () {
+//            var num = Math.ceil(Math.random() * maxNum);
+            var num = getNum();
+            if (num < 10) {
+                num = "0" + num;
+            }
+
+            $("#box").html(num);
+        }, 50);
+    });
+
+    $("#stop_btn").bind("click", function () {
+        clearInterval(s);
+        winList.push(num);
+        s = 0;
+    });
+
+    $('#start').click(function () {
+        $('#jiang').html('等待抽奖中');
+        immer = setInterval(function () {
+            var num = Math.floor(Math.random() * list.length);
+            $('#box').html(list[num]);
+        }, 30);
+    });
+
+    $('#stop').click(function () {
+        clearInterval(immer);
+        if (!immer) {
+            return;
+        }
+        var num1 = Math.floor(Math.random() * lis.length);
+        $('#box').html(lis[num1]);
+        //设置抽奖结果
+        var li = ['01', '02', '03', '04'];
+        (function () {
+            se = setInterval(function () {
+                var nu = Math.floor(Math.random() * li.length);
+                $('#jiang').html(li[nu]);
+            }, 30);
+        })();
+    });
+
+    setInterval(function () {
+        var time = new Date();
+        var y = time.getFullYear();
+        // 月份取值 0-11
+        var m = time.getMonth() + 1;
+        var d = time.getDate();
+        var h = time.getHours();
+        var i = time.getMinutes();
+        var s = time.getSeconds();
+        if (s < 10) {
+            s = "0" + s;
+        }
+
+        $('#ji').html(y + '/' + m + '/' + d + ' ' + h + ':' + i + ':' + s);
+        if (s > 0) {
+            clearInterval(se);
+        }
+    }, 500);
+</script>
+
+</body>
+</html>
